@@ -13,7 +13,7 @@ ALGORITHM = "HS256"
 
 class AccessToken(BaseModel):
     iss: str
-    sub: str  # ← Agora é string
+    sub: str  
     aud: str
     exp: float
     iat: float
@@ -21,12 +21,10 @@ class AccessToken(BaseModel):
     jti: str
 
 
-# Representa o token já decodificado (payload)
 class JWTToken(BaseModel):
     access_token: AccessToken
 
 
-# Representa a resposta do login (string do token)
 class JWTResponse(BaseModel):
     access_token: str
 
@@ -35,7 +33,7 @@ def sign_jwt(user_id: int) -> JWTResponse:
     now = time.time()
     payload = {
         "iss": "curso-fastapi.com.br",
-        "sub": str(user_id),  # ← Converter para string
+        "sub": str(user_id), 
         "aud": "curso-fastapi",
         "exp": now + (60 * 30),
         "iat": now,
@@ -43,19 +41,17 @@ def sign_jwt(user_id: int) -> JWTResponse:
         "jti": uuid4().hex,
     }
     token = jwt.encode(payload, SECRET, algorithm=ALGORITHM)
-    return JWTResponse(access_token=token)  # <-- retorna a string
+    return JWTResponse(access_token=token)
 
 
 async def decode_jwt(token: str) -> JWTToken | None:
     try:
-        # jwt.decode já valida exp, nbf, aud automaticamente
         decoded_token = jwt.decode(
             token,
             SECRET,
             audience="curso-fastapi",
             algorithms=[ALGORITHM]
         )
-        # decoded_token já é o dict do payload, encapsula em JWTToken
         return JWTToken(access_token=AccessToken(**decoded_token))
     except jwt.ExpiredSignatureError:
         return None
@@ -98,7 +94,7 @@ class JWTBearer(HTTPBearer):
 async def get_current_user(
     token: Annotated[JWTToken, Depends(JWTBearer())]
 ) -> dict[str, int]:
-    return {"user_id": int(token.access_token.sub)}  # ← Converter de volta para int
+    return {"user_id": int(token.access_token.sub)}
 
 
 def login_required(

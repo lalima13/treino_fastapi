@@ -6,7 +6,7 @@ from src.database import database, metadata, engine
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    from src.models.post import posts # Importa o modelo de posts para criar a tabela no banco de dados
+    from src.models.post import posts
     
     await database.connect()
     metadata.create_all(engine)

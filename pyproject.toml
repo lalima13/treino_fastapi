@@ -11,7 +11,8 @@ dependencies = [
     "uvicorn[standard]>=0.48.0,<0.49.0",
     "databases[aiosqlite,asyncpg]",
     "pyjwt>=2.13.0,<3.0.0",
-    "psycopg-binary"    
+    "psycopg-binary",
+    "psycopg2-binary (>=2.9.12,<3.0.0)"    
 ]
 
 [tool.poetry.group.dev.dependencies]
